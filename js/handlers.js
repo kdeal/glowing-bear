@@ -160,14 +160,18 @@ weechat.factory('handlers', ['$rootScope', '$log', 'models', 'plugins', 'notific
                 $rootScope.scrollWithBuffer();
             }
 
-            if (!manually && (!buffer.active || !$rootScope.isWindowFocused())) {
+            if (!manually) {
                 if (buffer.notify > 1 && _.contains(message.tags, 'notify_message') && !_.contains(message.tags, 'notify_none')) {
-                    buffer.unread++;
+                    if (!buffer.active) {
+                        buffer.unread++;
+                    }
                     $rootScope.$emit('notificationChanged');
                 }
 
                 if ((buffer.notify !== 0 && message.highlight) || _.contains(message.tags, 'notify_private')) {
-                    buffer.notification++;
+                    if (!buffer.active) {
+                        buffer.notification++;
+                    }
                     notifications.createHighlight(buffer, message);
                     $rootScope.$emit('notificationChanged');
                 }
